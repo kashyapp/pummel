@@ -110,6 +110,9 @@ public class Step implements Callable<Void>
             concurrency = step.step(concurrency);
         }
         while (concurrency < limit);
+
+        exec.shutdownNow();
+
         return null;
     }
 

@@ -111,6 +111,8 @@ public class Limit implements Callable<Void>
         reqs_per_sec = ((1000 / best_result.getMean()) * best_concurency);
         System.out.printf("%d\t%.2f\t%.2f\t%.2f\n", best_concurency, best_result.getPercentile(percentile), best_result.getMean(), reqs_per_sec);
 
+        exec.shutdownNow();
+
         return null;
     }
 }
