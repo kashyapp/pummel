@@ -27,6 +27,7 @@ import static com.google.common.collect.Iterables.addAll;
 import static com.google.common.collect.Iterables.limit;
 import static com.google.common.collect.Iterables.cycle;
 import static com.ning.pummel.cli.Benchmark.nsToMs;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Command(name = "step", description = "Step through concurrency levels and report statistics")
@@ -88,7 +89,7 @@ public class Step implements Callable<Void>
 
         StepFunction step = of.get();
 
-        if (labels) {System.out.printf("clients\ttp%.1f\tmean\treqs/sec\n", percentile);}
+        if (labels) {System.out.printf("clients\ttp%.1f\tmean\tstddev\tmax\tcount\ttime\treqs/sec\n", percentile);}
         int concurrency = start;
         ThreadPoolExecutor exec = Fight.threadPoolExecutor();
 
@@ -97,11 +98,15 @@ public class Step implements Callable<Void>
             DescriptiveStatistics stats = new Fight(exec, concurrency, urls).call();
             long stop = System.nanoTime();
             long duration_nanos = stop - start;
-            System.out.printf("%d\t%.2f\t%.2f\t%.2f\n",
+            System.out.printf("%d\t%.2f\t%.2f\t%.2f\t%.2f\t%d\t%.2f\t%.2f\n",
                               concurrency,
                               nsToMs(stats.getPercentile(percentile)),
                               nsToMs(stats.getMean()),
-                              ((double)stats.getN()) * SECONDS.toNanos(1) / duration_nanos);
+                              nsToMs(stats.getStandardDeviation()),
+                              nsToMs(stats.getMax()),
+                              stats.getN(),
+                              ((double) duration_nanos) / SECONDS.toNanos(1),
+                              ((double) stats.getN()) * SECONDS.toNanos(1) / duration_nanos);
             concurrency = step.step(concurrency);
         }
         while (concurrency < limit);
