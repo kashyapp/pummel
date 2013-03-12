@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -27,7 +26,6 @@ import static com.google.common.collect.Iterables.addAll;
 import static com.google.common.collect.Iterables.limit;
 import static com.google.common.collect.Iterables.cycle;
 import static com.ning.pummel.cli.Benchmark.nsToMs;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Command(name = "step", description = "Step through concurrency levels and report statistics")
@@ -94,10 +92,13 @@ public class Step implements Callable<Void>
         ThreadPoolExecutor exec = Fight.threadPoolExecutor();
 
         do {
+            Fight fight = new Fight(exec, concurrency, urls);
+
             long start = System.nanoTime();
-            DescriptiveStatistics stats = new Fight(exec, concurrency, urls).call();
+            DescriptiveStatistics stats = fight.call();
             long stop = System.nanoTime();
             long duration_nanos = stop - start;
+
             System.out.printf("%d\t%.2f\t%.2f\t%.2f\t%.2f\t%d\t%.2f\t%.2f\n",
                               concurrency,
                               nsToMs(stats.getPercentile(percentile)),
