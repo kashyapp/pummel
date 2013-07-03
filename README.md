@@ -115,11 +115,11 @@ actually a clever mangled executable jar file.
 
 Precompiled pummel binaries are available
 [as a deb](http://static.skife.org/pummel_0.0.2.deb) or as a
-[binary executable](http://static.skife.org/pummel-0.0.2). If you
+[binary executable](https://raw.github.com/kashyapp/pummel/artifacts/pummel-0.0.3). If you
 download the binary executable you will probably need to set it `chmod
-+x pummel-0.0.2`.
++x pummel-0.0.3`.
 
-Source is available [on github](http://github.com/ning/pummel) and
+Source is available [on github](http://github.com/kashyapp/pummel) and
 uses [Apache Maven](http://maven.apache.org) to build. To build the
 dpkg and binary use `mvn package`
 
